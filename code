@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Score Tracker with Timer and Stopwatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .score-tracker {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 800px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .side {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 150px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .admin-dashboard {
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
+        .admin-dashboard input {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .admin-dashboard button {
+            background-color: #28a745;
+        }
+
+        .admin-dashboard button:hover {
+            background-color: #218838;
+        }
+
+        /* Hidden by default */
+        #admin-dashboard.hidden {
+            display: none;
+        }
+
+        .password-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
+        .password-box input {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .password-box button {
+            background-color: #007BFF;
+        }
+
+        .password-box button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Timer and Stopwatch section */
+        .timer-stopwatch {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .timer,
+        .stopwatch {
+            text-align: center;
+        }
+
+        .timer input,
+        .stopwatch button {
+            font-size: 14px;
+            margin: 5px;
+        }
+
+        /* Color coding for buttons */
+        .start-button {
+            background-color: #28a745;
+        }
+
+        .start-button:hover {
+            background-color: #218838;
+        }
+
+        .stop-button {
+            background-color: #dc3545;
+        }
+
+        .stop-button:hover {
+            background-color: #c82333;
+        }
+
+        .restart-button {
+            background-color: #007BFF;
+        }
+
+        .restart-button:hover {
+            background-color: #0056b3;
+        }
+
+        .exit-admin {
+            background-color: #dc3545;
+            margin-top: 10px;
+        }
+
+        .exit-admin:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Password Input Box -->
+    <div class="password-box" id="password-box">
+        <h2>Enter Admin Password</h2>
+        <input type="password" id="password-input" placeholder="Enter Password">
+        <button id="password-submit">Submit</button>
+    </div>
+
+    <!-- Admin Dashboard (Initially Hidden) -->
+    <div class="admin-dashboard hidden" id="admin-dashboard">
+        <h2>Admin Dashboard</h2>
+        <label for="teamAName">Team A Name:</label>
+        <input type="text" id="teamAName" placeholder="Enter Team A Name">
+        
+        <label for="teamBName">Team B Name:</label>
+        <input type="text" id="teamBName" placeholder="Enter Team B Name">
+
+        <button id="updateTeamNames">Update Team Names</button>
+        <button class="exit-admin" id="exitAdmin">Exit Admin Dashboard</button>
+    </div>
+
+    <!-- Score Tracker -->
+    <div class="score-tracker" id="score-tracker">
+        <div class="side" id="sideA">
+            <h3 id="sideANameDisplay">Team A</h3>
+            <p>Score: <span id="sideAScore">0</span></p>
+            <button id="increaseSideA">Increase</button>
+            <button id="decreaseSideA">Decrease</button>
+        </div>
+
+        <!-- Timer and Stopwatch -->
+        <div class="timer-stopwatch">
+            <!-- Timer Section -->
+            <div class="timer">
+                <h3>Timer</h3>
+                <input type="number" id="timerMinutes" value="1" min="0" style="width: 50px;"> : 
+                <input type="number" id="timerSeconds" value="0" min="0" max="59" style="width: 50px;">
+                <button id="startTimer" class="start-button">Start</button>
+                <button id="stopTimer" class="stop-button">Stop</button>
+                <button id="resetTimer" class="restart-button">Restart</button>
+                <p id="timerDisplay">00:00</p>
+            </div>
+
+            <!-- Stopwatch Section -->
+            <div class="stopwatch">
+                <h3>Stopwatch</h3>
+                <p id="stopwatchDisplay">00:00</p>
+                <button id="startStopwatch" class="start-button">Start</button>
+                <button id="stopStopwatch" class="stop-button">Stop</button>
+                <button id="resetStopwatch" class="restart-button">Restart</button>
+            </div>
+        </div>
+
+        <div class="side" id="sideB">
+            <h3 id="sideBNameDisplay">Team B</h3>
+            <p>Score: <span id="sideBScore">0</span></p>
+            <button id="increaseSideB">Increase</button>
+            <button id="decreaseSideB">Decrease</button>
+        </div>
+    </div>
+
+    <script>
+        // Initial scores and team names
+        let sideAScore = 0;
+        let sideBScore = 0;
+        let teamAName = "Team A";
+        let teamBName = "Team B";
+
+        // Password for Admin Dashboard
+        const correctPassword = "admin123"; // Set your password here
+
+        // Timer and Stopwatch variables
+        let timerInterval;
+        let stopwatchInterval;
+        let timerSecondsLeft;
+        let stopwatchSeconds = 0;
+
+        // DOM Elements
+        const sideAScoreElem = document.getElementById('sideAScore');
+        const sideBScoreElem = document.getElementById('sideBScore');
+        const sideANameDisplay = document.getElementById('sideANameDisplay');
+        const sideBNameDisplay = document.getElementById('sideBNameDisplay');
+        const teamANameInput = document.getElementById('teamAName');
+        const teamBNameInput = document.getElementById('teamBName');
+        const updateTeamNamesButton = document.getElementById('updateTeamNames');
+        const increaseSideAButton = document.getElementById('increaseSideA');
+        const increaseSideBButton = document.getElementById('increaseSideB');
+        const decreaseSideAButton = document.getElementById('decreaseSideA');
+        const decreaseSideBButton = document.getElementById('decreaseSideB');
+        const adminDashboard = document.getElementById('admin-dashboard');
+        const passwordBox = document.getElementById('password-box');
+        const passwordInput = document.getElementById('password-input');
+        const passwordSubmit = document.getElementById('password-submit');
+        const exitAdminButton = document.getElementById('exitAdmin');
+
+        // Timer DOM Elements
+        const timerMinutesInput = document.getElementById('timerMinutes');
+        const timerSecondsInput = document.getElementById('timerSeconds');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const startTimerButton = document.getElementById('startTimer');
+        const stopTimerButton = document.getElementById('stopTimer');
+        const resetTimerButton = document.getElementById('resetTimer');
+
+        // Stopwatch DOM Elements
+        const stopwatchDisplay = document.getElementById('stopwatchDisplay');
+        const startStopwatchButton = document.getElementById('startStopwatch');
+        const stopStopwatchButton = document.getElementById('stopStopwatch');
+        const resetStopwatchButton = document.getElementById('resetStopwatch');
+
+        // Password validation and access to Admin Dashboard
+        passwordSubmit.addEventListener('click', () => {
+            const enteredPassword = passwordInput.value.trim();
+            if (enteredPassword === correctPassword) {
+                passwordBox.classList.add('hidden');
+                adminDashboard.classList.remove('hidden');
+            } else {
+                alert("Incorrect password.");
+            }
+        });
+
+        // Event listener for updating team names
+        updateTeamNamesButton.addEventListener('click', () => {
+            const newTeamAName = teamANameInput.value.trim();
+            const newTeamBName = teamBNameInput.value.trim();
+            if (newTeamAName) teamAName = newTeamAName;
+            if (newTeamBName) teamBName = newTeamBName;
+            sideANameDisplay.textContent = teamAName;
+            sideBNameDisplay.textContent = teamBName;
+        });
+
+        // Event listeners for increasing and decreasing scores
+        increaseSideAButton.addEventListener('click', () => {
+            sideAScore++;
+            sideAScoreElem.textContent = sideAScore;
+        });
+
+        increaseSideBButton.addEventListener('click', () => {
+            sideBScore++;
+            sideBScoreElem.textContent = sideBScore;
+        });
+
+        decreaseSideAButton.addEventListener('click', () => {
+            if (sideAScore > 0) {
+                sideAScore--;
+                sideAScoreElem.textContent = sideAScore;
+            }
+        });
+
+        decreaseSideBButton.addEventListener('click', () => {
+            if (sideBScore > 0) {
+                sideBScore--;
+                sideBScoreElem.textContent = sideBScore;
+            }
+        });
+
+        // Timer Functions
+        function startTimer() {
+            timerSecondsLeft = timerMinutesInput.value * 60 + parseInt(timerSecondsInput.value);
+
+            timerInterval = setInterval(() => {
+                if (timerSecondsLeft <= 0) {
+                    clearInterval(timerInterval);
+                } else {
+                    timerSecondsLeft--;
+                    let minutes = Math.floor(timerSecondsLeft / 60);
+                    let seconds = timerSecondsLeft % 60;
+                    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerDisplay.textContent = "00:00";
+        }
+
+        // Stopwatch Functions
+        function startStopwatch() {
+            stopwatchInterval = setInterval(() => {
+                stopwatchSeconds++;
+                let minutes = Math.floor(stopwatchSeconds / 60);
+                let seconds = stopwatchSeconds % 60;
+                stopwatchDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function stopStopwatch() {
+            clearInterval(stopwatchInterval);
+        }
+
+        function resetStopwatch() {
+            clearInterval(stopwatchInterval);
+            stopwatchSeconds = 0;
+            stopwatchDisplay.textContent = "00:00";
+        }
+
+        // Event listeners for the timer
+        startTimerButton.addEventListener('click', startTimer);
+        stopTimerButton.addEventListener('click', stopTimer);
+        resetTimerButton.addEventListener('click', resetTimer);
+
+        // Event listeners for the stopwatch
+        startStopwatchButton.addEventListener('click', startStopwatch);
+        stopStopwatchButton.addEventListener('click', stopStopwatch);
+        resetStopwatchButton.addEventListener('click', resetStopwatch);
+
+        // Exit Admin Dashboard
+        exitAdminButton.addEventListener('click', () => {
+            adminDashboard.classList.add('hidden');
+            passwordBox.classList.remove('hidden');
+        });
+    </script>
+
+</body>
+</html>
